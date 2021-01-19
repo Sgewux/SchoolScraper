@@ -2,7 +2,7 @@ from lxml import html
 import requests
 import webbrowser
 
-home = 'https://www.colegiocomfenalcoibague.edu.co/'
+HOME = 'https://www.colegiocomfenalcoibague.edu.co/'
 
 X_circular_name = '//div[@class ="gkTabsItem gk-opacity gk-active"]/div/table/tbody/tr/td/a/text()'
 
@@ -13,7 +13,7 @@ def parser():
 	circulares_dict = {}
 
 	try:
-		request = requests.get(home)
+		request = requests.get(HOME)
 
 		if request.status_code == 200:
 			home_html = request.content.decode('utf-8')
@@ -22,7 +22,7 @@ def parser():
 			circular_links = parse.xpath(X_circular_link)
 
 			for i in range(len(circular_names)): #Notice that circular_names and circular_links have the same lenght
-				circulares_dict[f'{circular_names[i]}\n'] = home + circular_links[i]
+				circulares_dict[f'{circular_names[i]}\n'] = HOME + circular_links[i]
 
 			return circulares_dict
 
@@ -66,7 +66,7 @@ def main():
 
 	if len(new_circulares) > 0:
 		
-		print(f'There\'s {len(new_circulares)} new circulares!\n Do you want to see them? [Y/N]')
+		print(f'There\'s {len(new_circulares)} new circulares!\nDo you want to see them? [Y/N]')
 
 		for i in new_circulares:
 			print(i)
