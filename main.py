@@ -1,12 +1,7 @@
+from expressions import HOME, X_circular_name, X_circular_link
 from lxml import html
 import requests
 import webbrowser
-
-HOME = 'https://www.colegiocomfenalcoibague.edu.co/'
-
-X_circular_name = '//div[@class ="gkTabsItem gk-opacity gk-active"]/div/table/tbody/tr/td/a/text()'
-
-X_circular_link = '//div[@class ="gkTabsItem gk-opacity gk-active"]/div/table/tbody/tr/td/a/@href'
 
 
 def parser():
@@ -15,46 +10,35 @@ def parser():
 	try:
 		request = requests.get(HOME)
 
-		if request.status_code == 200:
-			home_html = request.content.decode('utf-8')
-			parse = html.fromstring(home_html)
-			circular_names = parse.xpath(X_circular_name)
-			circular_links = parse.xpath(X_circular_link)
-
-			for i in range(len(circular_names)): #Notice that circular_names and circular_links have the same lenght
-				circulares_dict[f'{circular_names[i]}\n'] = HOME + circular_links[i]
-
-			return circulares_dict
-
-
-
-		else:
-
-			raise ValueError
-
-	except ValueError:
+	
+	except:
 
 		print(f'ERROR {request.status_code}')
 
+	
+	home_html = request.content.decode('utf-8')
+	parse = html.fromstring(home_html)
+	circular_names = parse.xpath(X_circular_name)
+	circular_links = parse.xpath(X_circular_link)
+
+	for i in range(len(circular_names)): #Notice that circular_names and circular_links have the same lenght
+		circulares_dict[f'{circular_names[i]}\n'] = HOME + circular_links[i]
+
+	return circulares_dict
+
 
 def get_new_circulares(dictionary):
-	new_circulares = []
-	current_circulares = []
+
 	with open('circulares.txt', 'r') as f:
 
-		for line in f.readlines():
-			current_circulares.append(line)
+		current_circulares = [line for line in f.readlines()]
 
 	with open('circulares.txt', 'a') as f:
 
-		for k in dictionary.keys():
+		new_circulares = [k for k in dictionary.keys() if k not in current_circulares]
 
-			if k not in current_circulares:
-
-				f.write(k)
-				new_circulares.append(k)
-
-
+		for circular in new_circulares:
+			f.write(circular)
 
 	return new_circulares
 
